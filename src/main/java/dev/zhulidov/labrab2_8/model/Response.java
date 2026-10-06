@@ -8,11 +8,11 @@ import lombok.*;
 @Setter
 @Getter
 public class Response{
-        String uid;
-        String operationUid;
-        String systemTime;
-        String       code;
-        String errorCode;
-        String errorMessage;
+   private      String uid;
+    private     String operationUid;
+    private    String systemTime;
+    private     Codes       code;
+    private     ErrorCodes errorCode;
+    private     ErrorMessages errorMessage;
 
 }

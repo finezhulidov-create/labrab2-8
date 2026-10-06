@@ -10,7 +10,7 @@ import lombok.Builder;
 public record Request(
   @NotBlank @Size(max = 32) String uid,
   @NotBlank @Size(max = 32) String  operationUid,
-        String systemName,
+        Systems systemName,
   @NotBlank      String systemTime,
         String source,
   @Min(1)@Max(10000) int communicationId,
@@ -18,4 +18,18 @@ public record Request(
         int productCode,
         int smsCode
 ) {
+    @Override
+    public String toString() {
+        return "Request{" +
+                "uid='" + uid + '\'' +
+                ", operationUid='" + operationUid + '\'' +
+                ", systemName='" + systemName + '\'' +
+                ", systemTime='" + systemTime + '\'' +
+                ", source='" + source + '\'' +
+                ", communicationId=" + communicationId +
+                ", templateId=" + templateId +
+                ", productCode=" + productCode +
+                ", smsCode=" + smsCode +
+                '}';
+    }
 }
