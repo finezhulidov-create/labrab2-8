@@ -3,6 +3,7 @@ package dev.zhulidov.labrab2_8.controller;
 import dev.zhulidov.labrab2_8.exception.UnsupportedCodeException;
 import dev.zhulidov.labrab2_8.exception.ValidationFailedException;
 import dev.zhulidov.labrab2_8.model.*;
+import dev.zhulidov.labrab2_8.service.ModifyRequestService;
 import dev.zhulidov.labrab2_8.service.ModifyResponseService;
 import dev.zhulidov.labrab2_8.service.ValidationInterface;
 import dev.zhulidov.labrab2_8.util.DateTimeUtil;
@@ -28,20 +29,23 @@ public class MyController {
 
     private final ValidationInterface validationInterface;
     private final ModifyResponseService modifyResponseService;
+    private final ModifyRequestService modifyRequestService;
 
     @Autowired
-    public MyController(ValidationInterface validationInterface,@Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService) {
+    public MyController(ValidationInterface validationInterface, @Qualifier("ModifySystemTimeResponseService") ModifyResponseService modifyResponseService, ModifyRequestService modifyRequestService) {
         this.validationInterface = validationInterface;
         this.modifyResponseService = modifyResponseService;
+        this.modifyRequestService = modifyRequestService;
     }
 
     @PostMapping("/feedback")
     public ResponseEntity<Response> feedBack(@RequestBody @Valid Request request, BindingResult bindingResult){
-
+        Long start = System.currentTimeMillis();
+        request.setCurrentMillis(start);
         log.info("request: {}", request);
         Response response = Response.builder()
-                .uid(request.uid())
-                .operationUid(request.operationUid())
+                .uid(request.getUid())
+                .operationUid(request.getOperationUid())
                 .systemTime(DateTimeUtil.getCustomFormat().format(new Date()))
                 .code(Codes.SUCCESS)
                 .errorCode(ErrorCodes.EMPTY)
@@ -71,11 +75,15 @@ public class MyController {
             log.info("RESPONSE changed code: {}, errCode: {}, errMess: {} ", response.getCode(),response.getErrorCode(),response.getErrorMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        modifyResponseService.modify(response);
+        log.info("response: {}", response);
+        modifyRequestService.modify(request);
+
         return ResponseEntity.ok(response);
 
     }
     private void isValidUid(Request request){
-        if (request.uid().equals("123")){
+        if (request.getUid().equals("123")){
             throw new UnsupportedCodeException("UnsupportedCode");
         }
     }

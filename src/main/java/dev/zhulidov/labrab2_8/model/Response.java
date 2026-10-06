@@ -15,4 +15,15 @@ public class Response{
     private     ErrorCodes errorCode;
     private     ErrorMessages errorMessage;
 
+    @Override
+    public String toString() {
+        return "Response{" +
+                "uid='" + uid + '\'' +
+                ", operationUid='" + operationUid + '\'' +
+                ", systemTime='" + systemTime + '\'' +
+                ", code=" + code +
+                ", errorCode=" + errorCode +
+                ", errorMessage=" + errorMessage +
+                '}';
+    }
 }
